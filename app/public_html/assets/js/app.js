@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }
 
   function renderRow(rowData) {
-    const sum = (rowData.sum / 90)
+    const sum = (rowData.sum / 100)
       .toLocaleString('ru', {minimumFractionDigits: 2, maximumFractionDigits: 2})
       .replace(',', '.');
     const state = renderStatesList(rowData.state);
