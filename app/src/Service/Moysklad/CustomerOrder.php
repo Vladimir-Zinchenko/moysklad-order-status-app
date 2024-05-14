@@ -56,6 +56,7 @@ class CustomerOrder
     {
         $body = [];
         $stateId = $data['stateId'];
+        var_dump($id, $stateId);
         $body['state'] = [
             'meta' => [
                 'href' => 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/states/' . $stateId,
@@ -67,7 +68,7 @@ class CustomerOrder
         return Curl::factory(self::CUSTOMER_ORDERS_URL . '/' . $id)
             ->setOptions([
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_CUSTOMREQUEST, 'PUT',
+                CURLOPT_CUSTOMREQUEST => 'PUT',
                 CURLOPT_HTTPHEADER => [
                     'Accept-Encoding: gzip',
                     'Content-Type: application/json',
