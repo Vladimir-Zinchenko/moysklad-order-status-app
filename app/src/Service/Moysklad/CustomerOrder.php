@@ -56,7 +56,6 @@ class CustomerOrder
     {
         $body = [];
         $stateId = $data['stateId'];
-        var_dump($id, $stateId);
         $body['state'] = [
             'meta' => [
                 'href' => 'https://api.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/states/' . $stateId,

@@ -71,8 +71,7 @@ class CustomerOrderController
         unset($data['id']);
 
         $result = $this->customerOrder->update($id, $data);
-        var_dump($this->authentication->getToken(), $result); die;
 
-        return new JsonResponse('OK');
+        return new JsonResponse($result);
     }
 }

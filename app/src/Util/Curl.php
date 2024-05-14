@@ -92,7 +92,6 @@ class Curl
         curl_setopt_array($this->ch, $this->options);
 
         $output = curl_exec($this->ch);
-//        var_dump($output);die;
 
         if ($output === false) {
             throw new RuntimeException('Error when requesting to the server');
