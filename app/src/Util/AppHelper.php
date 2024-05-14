@@ -46,4 +46,12 @@ class AppHelper
     {
         return self::url('assets/' . trim($path, '/'));
     }
+
+    /**
+     * @return bool
+     */
+    public static function isDebug(): bool
+    {
+        return (bool) Config::get('debug', false);
+    }
 }

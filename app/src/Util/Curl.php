@@ -91,6 +91,12 @@ class Curl
 
         curl_setopt_array($this->ch, $this->options);
 
+        $debugMsg = sprintf("%s %s\n%s",
+            $this->requestMethod(),
+            $this->url,
+            implode("\n", $this->options[CURLOPT_HTTPHEADER])
+        );
+
         $output = curl_exec($this->ch);
 
         if ($output === false) {
@@ -101,6 +107,10 @@ class Curl
 
         Cache::getInstance()->set($key, $output);
 
+        $debugMsg .= "\n$output";
+
+        Log::debug($debugMsg);
+
         return $output;
     }
 
@@ -110,5 +120,21 @@ class Curl
     public function execAsJson(): array
     {
         return json_decode($this->exec(), true);
+    }
+
+    /**
+     * @return string
+     */
+    private function requestMethod(): string
+    {
+        if (in_array(CURLOPT_POST, $this->options) && $this->options[CURLOPT_POST]) {
+            return 'POST';
+        }
+
+        if (in_array(CURLOPT_CUSTOMREQUEST, $this->options)) {
+            return strtoupper($this->options[CURLOPT_CUSTOMREQUEST]);
+        }
+
+        return 'GET';
     }
 }

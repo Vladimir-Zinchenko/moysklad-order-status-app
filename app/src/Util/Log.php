@@ -17,6 +17,10 @@ class Log
      */
     public static function debug(string $message): void
     {
+        if (!Config::get('debug', false)) {
+            return;
+        }
+
         self::write(self::LEVEL_DEBUG, $message);
     }
 
@@ -38,6 +42,14 @@ class Log
      */
     protected static function write(string $level, string $message): void
     {
-        $filename = sprintf('%s-%s.log', date('ymd'), $level);
+        $filename = sprintf('%s-%s.log', date('Ymd'), $level);
+        $logfile = AppHelper::path('logs/' . $filename);
+        $message = date('H:i:s') . "\n" . $message;
+
+        if (file_exists($logfile)) {
+            $message = "\n\n" . str_repeat('=', 40) . "\n\n" . $message;
+        }
+
+        file_put_contents($logfile, $message, FILE_APPEND);
     }
 }
