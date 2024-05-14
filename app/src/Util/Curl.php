@@ -117,7 +117,7 @@ class Curl
     /**
      * @return array
      */
-    public function execAsJson(): array
+    public function execAsArray(): array
     {
         return json_decode($this->exec(), true);
     }

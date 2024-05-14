@@ -101,7 +101,7 @@ class Authentication
                     'Authorization: Basic ' . $credentials,
                 ]
             ])
-            ->execAsJson();
+            ->execAsArray();
 
         if (isset($result['access_token'])) {
             $this->authData = [

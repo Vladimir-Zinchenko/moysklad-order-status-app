@@ -44,7 +44,7 @@ class Log
     {
         $filename = sprintf('%s-%s.log', date('Ymd'), $level);
         $logfile = AppHelper::path('logs/' . $filename);
-        $message = date('H:i:s') . "\n" . $message;
+        $message = date('H:i:s.u') . "\n" . $message;
 
         if (file_exists($logfile)) {
             $message = "\n\n" . str_repeat('=', 40) . "\n\n" . $message;

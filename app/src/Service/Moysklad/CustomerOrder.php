@@ -26,12 +26,20 @@ class CustomerOrder
         $orders = [];
 
         foreach ($this->ordersRequest() as $requestedOrder) {
-            $state = $requestedOrder['state']['meta']['href'];
-            $state = explode('/', $state);
-            $state = end($state);
-            $agent = $this->getInfoByUrl($requestedOrder['agent']['meta']['href']);
-            $organization = $this->getInfoByUrl($requestedOrder['organization']['meta']['href']);
-            $currency = $this->getInfoByUrl($requestedOrder['rate']['currency']['meta']['href']);
+            $state = $requestedOrder['state']['id'];
+//            var_dump($requestedOrder['agent']);die;
+            $agent = [
+                'name' => $requestedOrder['agent']['name'],
+                'href' => $requestedOrder['agent']['meta']['uuidHref'],
+            ];
+            $organization = [
+                'name' => $requestedOrder['organization']['name'],
+                'href' => $requestedOrder['organization']['meta']['uuidHref'],
+            ];
+            $currency = [
+                'name' => $requestedOrder['rate']['currency']['name'],
+                'href' => $requestedOrder['rate']['currency']['meta']['uuidHref'],
+            ];
 
             $order = [
                 'id' => $requestedOrder['id'],
@@ -75,7 +83,7 @@ class CustomerOrder
                 ],
                 CURLOPT_POSTFIELDS => json_encode($body),
             ])
-            ->execAsJson();
+            ->execAsArray();
     }
 
     /**
@@ -106,7 +114,7 @@ class CustomerOrder
      */
     private function ordersRequest(): array
     {
-        $result = Curl::factory(self::CUSTOMER_ORDERS_URL . '?order=created,desc')
+        $result = Curl::factory(self::CUSTOMER_ORDERS_URL . '?expand=state,agent,organization,rate.currency&order=created,desc&limit=100')
             ->setOptions([
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HTTPHEADER => [
@@ -114,19 +122,9 @@ class CustomerOrder
                     'Authorization: Bearer ' . $this->authentication->getToken(),
                 ]
             ])
-            ->execAsJson();
+            ->execAsArray();
 
         return $result['rows'];
-    }
-
-    private function getInfoByUrl(string $url): array
-    {
-        $result = $this->request($url);
-
-        return [
-            'name' => $result['name'],
-            'href' => $result['meta']['uuidHref'],
-        ];
     }
 
     /**
@@ -134,19 +132,7 @@ class CustomerOrder
      */
     private function statesRequest(): array
     {
-        $result = $this->request(self::CUSTOMER_ORDERS_URL . '/metadata');
-
-        return $result['states'];
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return array
-     */
-    private function request(string $url): array
-    {
-        return Curl::factory($url)
+        $result = Curl::factory(self::CUSTOMER_ORDERS_URL . '/metadata')
             ->setOptions([
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HTTPHEADER => [
@@ -154,6 +140,8 @@ class CustomerOrder
                     'Authorization: Bearer ' . $this->authentication->getToken(),
                 ]
             ])
-            ->execAsJson();
+            ->execAsArray();;
+
+        return $result['states'];
     }
 }
